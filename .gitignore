@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+google_client_secret.json
+# Local credentials and secrets
+.env
+google_client_secret.json
+jev.db
+jev.db-shm
+jev.db-wal

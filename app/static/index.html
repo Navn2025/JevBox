@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ef">
+  <title>JEV — Email intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="JEV home"><span class="brand-mark">J</span><span>jev</span></a>
+      <nav class="nav-list">
+        <a class="nav-item active" href="#inbox"><span class="nav-icon">▰</span> Inbox <span class="nav-count" id="sidebarCount">0</span></a>
+        <a class="nav-item" href="#usagePanel"><span class="nav-icon">⌁</span> Usage</a>
+        <a class="nav-item" href="#"><span class="nav-icon">◇</span> Rules</a>
+        <a class="nav-item" href="#"><span class="nav-icon">↺</span> History</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="usage-card">
+          <div class="usage-title"><span>JEV requests</span><span id="sideRequests">0</span></div>
+          <div class="usage-track"><span id="usageTrack"></span></div>
+          <p id="sideTokens">0 tokens used this session</p>
+        </div>
+        <button class="profile" type="button">
+          <span class="avatar">NS</span>
+          <span class="profile-copy"><strong>Navneet</strong><small id="connectionLabel">Checking Gmail…</small></span>
+        </button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div><p class="eyebrow">Email intelligence</p><h1>Classification Queue</h1></div>
+        <div class="topbar-actions">
+          <span class="live-status" id="liveStatus"><i></i><span>Checking connection</span></span>
+          <a class="button button-outline" href="/auth/google" id="connectButton">Connect Gmail</a>
+        </div>
+      </header>
+
+      <section class="content" id="inbox">
+        <div class="overview-row">
+          <div class="intro-copy">
+            <h2>Your inbox, understood as you scroll.</h2>
+            <p>Metadata appears immediately. JEV classifies only the emails that enter your viewport.</p>
+          </div>
+          <div class="privacy-note"><span>Body private</span> Email content is fetched only when opened.</div>
+        </div>
+
+        <section class="stats-grid" aria-label="Classification summary">
+          <article class="stat-card stat-highlight"><span class="stat-label">Emails loaded</span><strong id="loadedStat">0</strong><span class="stat-meta" id="loadMeta">First page loading</span></article>
+          <article class="stat-card"><span class="stat-label">Classified</span><strong id="classifiedStat">0</strong><span class="stat-meta">Cached by Gmail message ID</span></article>
+          <article class="stat-card"><span class="stat-label">JEV requests</span><strong id="requestStat">0</strong><span class="stat-meta" id="batchMeta">Batched classification</span></article>
+          <article class="stat-card"><span class="stat-label">Session cost</span><strong id="costStat">—</strong><span class="stat-meta" id="costMeta">Pricing not configured</span></article>
+        </section>
+
+        <details class="usage-panel" id="usagePanel">
+          <summary>
+            <div><span class="summary-kicker">JEV Usage</span><strong><span id="usageTokensSummary">0</span> tokens · <span id="usageRequestsSummary">0</span> requests · <span id="usageTimeSummary">0 ms</span> total · <span id="usageCostSummary">—</span></strong></div>
+            <span class="summary-action">View details <i>⌄</i></span>
+          </summary>
+          <div class="usage-details">
+            <div class="metric"><span>Input tokens</span><strong id="inputTokens">0</strong></div>
+            <div class="metric"><span>Output tokens</span><strong id="outputTokens">0</strong></div>
+            <div class="metric"><span>Avg. tokens / email</span><strong id="avgTokens">0</strong></div>
+            <div class="metric"><span>Avg. cost / email</span><strong id="avgCost">—</strong></div>
+            <div class="metric"><span>Average batch</span><strong id="avgBatch">0</strong></div>
+            <div class="metric"><span>Total classification time</span><strong id="totalClassificationTime">0 ms</strong></div>
+            <div class="current-batch">
+              <span>Latest batch</span>
+              <strong id="currentBatchTitle">No requests yet</strong>
+              <small id="currentBatchMeta">Scroll to classify visible emails.</small>
+              <button class="danger-button" id="resetHistory">Reset email history</button>
+            </div>
+          </div>
+        </details>
+
+        <section class="workspace">
+          <div class="workspace-header">
+            <div><div class="title-line"><h3>Inbox intelligence</h3><span class="queue-badge"><b id="queueCount">0</b> loaded</span></div><p>New pages append automatically near the bottom.</p></div>
+            <div class="workspace-actions">
+              <div class="classification-mode" role="group" aria-label="Classification mode">
+                <span>Mode</span>
+                <button class="mode-option active" data-mode="scroll">On scroll</button>
+                <button class="mode-option" data-mode="bulk">100 per call</button>
+                <input type="checkbox" id="autoToggle" checked hidden>
+              </div>
+              <button class="bulk-classify" id="bulkClassify" hidden>Classify next 100</button>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Filter loaded emails" autocomplete="off"></label>
+            <div class="filter-group" role="group" aria-label="Filter loaded emails">
+              <button class="filter active" data-filter="All">All</button>
+              <button class="filter" data-filter="Action">Needs action</button>
+              <button class="filter" data-filter="Important">Important</button>
+              <button class="filter" data-filter="Failed">Failed</button>
+            </div>
+          </div>
+
+          <div class="scroll-context">
+            <div class="scroll-progress"><span class="progress-dot"></span><span><strong id="screenCount">0</strong> in view · <strong id="completeCount">0</strong> classified · <strong id="pendingCount">0</strong> queued</span></div>
+            <span class="metadata-only">JEV receives metadata only</span>
+          </div>
+
+          <div class="email-list" id="emailList" aria-live="polite"></div>
+
+          <div class="list-status" id="listStatus">
+            <span class="loader" aria-hidden="true"></span>
+            <div><strong id="listStatusTitle">Loading emails…</strong><small id="listStatusCopy">Fetching Gmail metadata</small></div>
+            <button class="retry-load" id="retryLoad" hidden>Retry</button>
+          </div>
+          <div id="loadSentinel" class="load-sentinel" aria-hidden="true"></div>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <span>⌕</span><h4>No matching emails</h4><p>Try a different sender, subject, or filter.</p>
+          </div>
+          <div class="connect-state" id="connectState" hidden>
+            <span class="connect-mark">J</span><h4>Connect your Gmail inbox</h4><p>JEV loads metadata progressively and never sends email bodies for classification.</p><a class="button button-primary" href="/auth/google">Connect Gmail</a>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="email-dialog" id="emailDialog" aria-labelledby="detailSubject">
+    <div class="dialog-shell">
+      <header class="dialog-header"><button class="back-button" id="closeEmail" aria-label="Close email">←</button><div><span>Email detail</span><strong id="detailHeaderTitle">Message</strong></div><span class="body-private-badge">Not sent to JEV</span></header>
+      <div class="detail-loading" id="detailLoading"><span class="loader"></span><p>Loading full email securely…</p></div>
+      <div class="detail-error" id="detailError" hidden><h3>Couldn’t open this email</h3><p id="detailErrorCopy">Please try again.</p><button class="button button-outline" id="retryDetail">Retry</button></div>
+      <article class="email-detail" id="emailDetail" hidden>
+        <header class="message-header">
+          <div class="detail-subject-row"><h2 id="detailSubject"></h2><span id="detailTimestamp"></span></div>
+          <div class="detail-labels" id="detailLabels"></div>
+          <div class="sender-line"><span class="sender-avatar" id="detailAvatar"></span><div><strong id="detailSender"></strong><button id="toggleRecipients">to me ⌄</button><div class="recipient-details" id="recipientDetails" hidden></div></div></div>
+        </header>
+        <div class="message-body" id="messageBody"></div>
+        <section class="attachments" id="attachments" hidden><h3>Attachments</h3><div id="attachmentList"></div></section>
+      </article>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-check">✓</span><div><strong id="toastTitle">Done</strong><small id="toastCopy"></small></div></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
